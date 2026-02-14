@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe Game</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.5s;
+        }
+        #game {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            border: 2px solid #000;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .dark {
+            background-color: #333;
+            color: #fff;
+        }
+        .light {
+            background-color: #fff;
+            color: #000;
+        }
+        #toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="light">
+    <div id="toggle">Toggle Dark Mode</div>
+    <div id="game"></div>
+    <script>
+        const gameBoard = document.getElementById('game');
+        let currentPlayer = 'X';
+        let board = Array(9).fill(null);
+        let gameActive = true;
+
+        const checkWinner = () => {
+            const winningConditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+            for (const condition of winningConditions) {
+                const [a, b, c] = condition;
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    alert(`${board[a]} wins!`);
+                    gameActive = false;
+                    return;
+                }
+            }
+            if (!board.includes(null)) {
+                alert('Draw!');
+                gameActive = false;
+            }
+        };
+    
+        const handleCellClick = (index) => {
+            if (board[index] || !gameActive) return;
+            board[index] = currentPlayer;
+            gameBoard.childNodes[index].innerText = currentPlayer;
+            checkWinner();
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        };
+    
+        const createBoard = () => {
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.addEventListener('click', () => handleCellClick(i));
+                gameBoard.appendChild(cell);
+            }
+        };
+    
+        const toggleTheme = () => {
+            const body = document.body;
+            body.classList.toggle('dark');
+            body.classList.toggle('light');
+        };
+    
+        document.getElementById('toggle').addEventListener('click', toggleTheme);
+        createBoard();
+    </script>
+</body>
+</html>
